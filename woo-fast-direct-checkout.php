@@ -17,34 +17,39 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Keselamatan: Halang akses terus
+    exit; // Security: block direct access
 }
 
-// 1. Fungsi Utama: Semak kebergantungan (Dependency Check) sebelum memuatkan kod
+/**
+ * 1. Main bootstrap: verify the WooCommerce dependency before loading any code.
+ */
 function wfdc_initialize_plugin() {
-    // KESELAMATAN: Jika kelas WooCommerce tiada (bermaksud ia tidak aktif), hentikan proses
+    // Security: if the WooCommerce class is missing (plugin inactive), bail out.
     if ( ! class_exists( 'WooCommerce' ) ) {
         return;
     }
 
-    // 2. Cangkuk untuk menukar URL pengalihan (redirect)
+    // 2. Hook to swap the add-to-cart redirect URL.
     add_filter( 'woocommerce_add_to_cart_redirect', 'wfdc_skip_cart_redirect' );
 
-    // 3. Cangkuk untuk menukar teks butang dari "Add to Cart" kepada "Buy Now"
-    add_filter( 'woocommerce_product_single_add_to_cart_text', 'wfdc_custom_button_text' ); // Halaman produk tunggal
-    add_filter( 'woocommerce_product_add_to_cart_text', 'wfdc_custom_button_text' );        // Halaman arkib/katalog
+    // 3. Hook to change the button label from "Add to Cart" to "Buy Now".
+    add_filter( 'woocommerce_product_single_add_to_cart_text', 'wfdc_custom_button_text' ); // Single product page
+    add_filter( 'woocommerce_product_add_to_cart_text', 'wfdc_custom_button_text' );       // Archive/catalog pages
 }
-// Jalan pada plugins_loaded untuk pastikan WooCommerce dah sedia
+// Run on plugins_loaded so WooCommerce is already set up.
 add_action( 'plugins_loaded', 'wfdc_initialize_plugin' );
 
-// Fungsi Pengalihan (Redirect)
+/**
+ * Redirect function: force a valid WooCommerce checkout URL.
+ */
 function wfdc_skip_cart_redirect( $url ) {
-    // Memaksa WordPress mengalihkan pengguna ke URL Checkout WooCommerce yang sah
     return wc_get_checkout_url();
 }
 
-// Fungsi Penukaran Teks Butang
+/**
+ * Button label swap.
+ */
 function wfdc_custom_button_text() {
-    // KESELAMATAN: esc_html__ memastikan output rentetan (string) selamat dan boleh diterjemah
+    // Security: esc_html__ keeps the translated string safe.
     return esc_html__( 'Buy Now', 'woo-fast-direct-checkout' );
 }
