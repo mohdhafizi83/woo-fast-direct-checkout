@@ -40,6 +40,14 @@ No. The plugin includes a strict dependency check. If WooCommerce is deactivated
 = Can I change the "Buy Now" text to something else? =
 Yes, the text is fully translation-ready. You can use any standard WordPress translation plugin (like Loco Translate) to change the "Buy Now" string to anything you want, such as "Enroll Now" or "Purchase".
 
+== Security ==
+
+This plugin follows WordPress security best practices:
+
+* All data output is escaped with `esc_html()`, `esc_attr()`, or `esc_url()` before rendering.
+* Direct file access is blocked with an `ABSPATH` guard.
+* No secrets or API keys are stored in the plugin code.
+
 == Changelog ==
 
 = 1.0.0 =
